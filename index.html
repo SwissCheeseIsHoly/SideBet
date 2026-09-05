@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SideBet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="home">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">SideBet</span>
+  </a>
+  <div class="menu-wrap">
+    <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">
+      <span class="menu-lines"><span></span><span></span><span></span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Site navigation">
+      <a href="index.html" data-page="home"><span>Home</span><span>›</span></a>
+      <a href="create-bet.html" data-page="create"><span>Create Bet</span><span>＋</span></a>
+      <div class="menu-separator"></div>
+      <a href="my-bets.html" data-page="my-bets"><span>My Bets</span><span>›</span></a>
+      <a href="past-bets.html" data-page="past-bets"><span>Past Bets</span><span>›</span></a>
+      <a href="profile.html" data-page="profile"><span>Profile</span><span>›</span></a>
+    </nav>
+  </div>
+</header>
+
+
+<main class="page-shell">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">PRIVATE • CUSTOM • LOCAL</span>
+      <h1>Make the call.<br>Track the outcome.</h1>
+      <p>SideBet is a private prediction tool for the people you actually know. Create a market, organize the group, track pledges, and keep the outcome clean without turning the app itself into the payment processor.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold" href="create-bet.html">Create a Bet</a>
+        <a class="btn btn-outline" href="my-bets.html">View My Bets</a>
+      </div>
+    </div>
+
+    <div class="hero-preview card">
+      <div class="hero-preview-top">
+        <span class="eyebrow">LIVE EXAMPLE</span>
+        <span class="status">OPEN</span>
+      </div>
+      <h3>Will Arkansas win Saturday?</h3>
+      <div class="preview-price">
+        <div><span style="color:var(--muted);font-size:.72rem;font-weight:800;">YES</span><strong>63¢</strong></div>
+        <svg viewBox="0 0 180 52"><path d="M2 41 C18 37, 26 43, 42 31 S68 15, 83 23 S108 10, 126 17 S151 6, 178 8" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+        <div class="positive" style="font-weight:800;">+8.4%</div>
+      </div>
+      <div class="hero-preview-bottom"><span>Friends</span><span>$420 pool</span></div>
+    </div>
+  </section>
+
+  <section class="home-block">
+    <span class="eyebrow">WHAT SIDEBET DOES</span>
+    <h2>One clean tool. Separate pages. No clutter.</h2>
+    <div class="feature-grid">
+      <article class="feature-card card">
+        <span class="num">01</span>
+        <h3>Create</h3>
+        <p>Set the question, deadline, group, outcomes, and settlement rules on a dedicated create page.</p>
+      </article>
+      <article class="feature-card card">
+        <span class="num">02</span>
+        <h3>Track</h3>
+        <p>See active bets grouped like a watchlist with price movement, equity, and your current positions.</p>
+      </article>
+      <article class="feature-card card">
+        <span class="num">03</span>
+        <h3>Review</h3>
+        <p>Closed markets live on their own history page with forgiving search and clean results.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script src="common.js"></script>
+<script src="page.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Bet — SideBet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="create">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">SideBet</span>
+  </a>
+  <div class="menu-wrap">
+    <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">
+      <span class="menu-lines"><span></span><span></span><span></span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Site navigation">
+      <a href="index.html" data-page="home"><span>Home</span><span>›</span></a>
+      <a href="create-bet.html" data-page="create"><span>Create Bet</span><span>＋</span></a>
+      <div class="menu-separator"></div>
+      <a href="my-bets.html" data-page="my-bets"><span>My Bets</span><span>›</span></a>
+      <a href="past-bets.html" data-page="past-bets"><span>Past Bets</span><span>›</span></a>
+      <a href="profile.html" data-page="profile"><span>Profile</span><span>›</span></a>
+    </nav>
+  </div>
+</header>
+
+
+<main class="page-shell">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">CREATE MARKET</span>
+      <h1 class="page-title">Create a Bet</h1>
+      <p class="page-subtitle">Required fields are marked with <strong>*</strong>. Keep the rules clear enough that nobody can argue about the result later.</p>
+    </div>
+  </div>
+
+  <form id="createForm" class="form-card card">
+    <div class="form-grid">
+      <label class="wide"><span>Bet title <b>*</b></span><input id="title" type="text" maxlength="80" placeholder="Baby Prediction Pool" required></label>
+      <label class="wide"><span>Main question <b>*</b></span><input id="question" type="text" maxlength="160" placeholder="Will the baby be a boy or a girl?" required></label>
+
+      <label><span>Group</span>
+        <select id="group">
+          <option>Family</option><option>Friends</option><option>Roommates</option><option>Work</option><option>Local Sports</option><option>Other</option>
+        </select>
+      </label>
+
+      <label><span>Unit label <b>*</b></span><input id="unit" type="text" maxlength="20" value="$" required></label>
+      <label><span>Deadline date <b>*</b></span><input id="date" type="date" required></label>
+      <label><span>Deadline time <b>*</b></span><input id="time" type="time" value="00:00" required></label>
+
+      <div class="wide">
+        <span class="field-label">Settlement style</span>
+        <div class="payout-grid">
+          <button class="payout-choice active" type="button" data-payout="parimutuel"><strong>Pool Split</strong><span>Winning side divides the whole pool proportionally.</span></button>
+          <button class="payout-choice" type="button" data-payout="winner-take-all"><strong>Winner Takes All</strong><span>Largest winning pledge receives the full tracked pool.</span></button>
+          <button class="payout-choice" type="button" data-payout="tracking-only"><strong>Prediction Only</strong><span>Track the result without settlement math.</span></button>
+        </div>
+      </div>
+
+      <label class="wide"><span>Description</span><textarea id="description" rows="3" maxlength="500" placeholder="Optional context for people joining this market."></textarea></label>
+
+      <div class="wide">
+        <div class="field-head"><span class="field-label">Options <b>*</b></span><button id="addOption" class="btn btn-outline btn-small" type="button">Add Option</button></div>
+        <div id="options" class="options"></div>
+        <div style="margin-top:6px;color:var(--muted);font-size:.75rem;">At least 2 options are required.</div>
+      </div>
+
+      <label class="wide"><span>Rules <b>*</b></span><textarea id="rules" rows="4" maxlength="800" placeholder="How is the result decided? When do entries lock? Who resolves the market?" required></textarea></label>
+    </div>
+
+    <p id="message" class="form-message"></p>
+    <div class="form-actions">
+      <a class="btn btn-outline" href="index.html">Cancel</a>
+      <button class="btn btn-gold" type="submit">Create Market</button>
+    </div>
+  </form>
+</main>
+
+<script src="common.js"></script>
+<script src="page.js"></script>
+</body>
+</html>

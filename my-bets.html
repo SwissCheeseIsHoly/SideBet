@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bets — SideBet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="my-bets">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">SideBet</span>
+  </a>
+  <div class="menu-wrap">
+    <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">
+      <span class="menu-lines"><span></span><span></span><span></span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Site navigation">
+      <a href="index.html" data-page="home"><span>Home</span><span>›</span></a>
+      <a href="create-bet.html" data-page="create"><span>Create Bet</span><span>＋</span></a>
+      <div class="menu-separator"></div>
+      <a href="my-bets.html" data-page="my-bets"><span>My Bets</span><span>›</span></a>
+      <a href="past-bets.html" data-page="past-bets"><span>Past Bets</span><span>›</span></a>
+      <a href="profile.html" data-page="profile"><span>Profile</span><span>›</span></a>
+    </nav>
+  </div>
+</header>
+
+
+<main class="page-shell">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">MY BETS</span>
+      <h1 class="page-title">Portfolio</h1>
+      <p class="page-subtitle">Active markets grouped by the people or setting they belong to.</p>
+    </div>
+    <a class="btn btn-gold" href="create-bet.html">Create Bet</a>
+  </div>
+
+  <section class="dashboard-summary card">
+    <div>
+      <span style="color:var(--muted);font-size:.8rem;">Tracked Equity</span>
+      <strong id="equity" class="big">$0.00</strong>
+      <span id="dayChange" class="positive" style="font-size:.8rem;font-weight:800;">+0.0% today</span>
+    </div>
+    <div class="summary-chart">
+      <svg viewBox="0 0 600 150"><path id="portfolioPath" fill="none" stroke="currentColor" stroke-width="4"/></svg>
+    </div>
+    <div class="summary-stats">
+      <div><span>Open Markets</span><strong id="openCount">0</strong></div>
+      <div><span>Groups</span><strong id="groupCount">0</strong></div>
+      <div><span>Total Pledged</span><strong id="pledged">$0</strong></div>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <span class="eyebrow">ACTIVE MARKETS</span>
+    <div class="segment">
+      <button class="active" type="button" data-metric="equity">My Equity</button>
+      <button type="button" data-metric="change">% Change</button>
+      <button type="button" data-metric="price">Price</button>
+      <button type="button" data-metric="pledged">Pledged</button>
+    </div>
+  </div>
+
+  <div id="groups" class="group-list"></div>
+</main>
+
+<script src="common.js"></script>
+<script src="page.js"></script>
+</body>
+</html>

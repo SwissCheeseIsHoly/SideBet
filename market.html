@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Market — SideBet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="market">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">SideBet</span>
+  </a>
+  <div class="menu-wrap">
+    <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">
+      <span class="menu-lines"><span></span><span></span><span></span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Site navigation">
+      <a href="index.html" data-page="home"><span>Home</span><span>›</span></a>
+      <a href="create-bet.html" data-page="create"><span>Create Bet</span><span>＋</span></a>
+      <div class="menu-separator"></div>
+      <a href="my-bets.html" data-page="my-bets"><span>My Bets</span><span>›</span></a>
+      <a href="past-bets.html" data-page="past-bets"><span>Past Bets</span><span>›</span></a>
+      <a href="profile.html" data-page="profile"><span>Profile</span><span>›</span></a>
+    </nav>
+  </div>
+</header>
+
+
+<main class="page-shell">
+  <a class="back" href="my-bets.html">← Back to My Bets</a>
+  <div id="market">
+    <section class="market-hero card">
+      <div class="market-hero-top">
+        <div>
+          <span id="group" class="eyebrow">GROUP • OPEN</span>
+          <h1 id="title">Market</h1>
+          <p id="question"></p>
+        </div>
+        <div class="market-price">
+          <strong id="price">50¢</strong>
+          <span id="change" class="positive">+0.0%</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="market-chart-card card">
+      <div class="chart-head">
+        <span class="eyebrow">MARKET PRICE</span>
+        <div class="range">
+          <button type="button" data-range="1D">1D</button>
+          <button type="button" data-range="1W">1W</button>
+          <button class="active" type="button" data-range="1M">1M</button>
+          <button type="button" data-range="ALL">ALL</button>
+        </div>
+      </div>
+      <svg class="big-chart" viewBox="0 0 920 300">
+        <line x1="0" y1="60" x2="920" y2="60"></line>
+        <line x1="0" y1="120" x2="920" y2="120"></line>
+        <line x1="0" y1="180" x2="920" y2="180"></line>
+        <line x1="0" y1="240" x2="920" y2="240"></line>
+        <path id="chartPath" fill="none" stroke="currentColor" stroke-width="4"></path>
+      </svg>
+    </section>
+
+    <div class="market-grid">
+      <section class="market-panel card">
+        <span class="eyebrow">OUTCOMES</span>
+        <h2>Market Sides</h2>
+        <div id="outcomes" class="outcome-list"></div>
+        <button id="join" class="btn btn-gold" type="button" style="margin-top:14px;">Add Position</button>
+      </section>
+
+      <aside class="market-panel card">
+        <span class="eyebrow">DETAILS</span>
+        <h2>Market Info</h2>
+        <div class="info-list">
+          <div><span>Deadline</span><strong id="deadline">—</strong></div>
+          <div><span>Group</span><strong id="groupName">—</strong></div>
+          <div><span>Total Pledged</span><strong id="total">$0</strong></div>
+          <div><span>Settlement</span><strong id="settlement">—</strong></div>
+          <div><span>Your Pledge</span><strong id="mine">$0</strong></div>
+        </div>
+        <div class="rules"><strong>Rules</strong><br><span id="rules"></span></div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<script src="common.js"></script>
+<script src="page.js"></script>
+</body>
+</html>

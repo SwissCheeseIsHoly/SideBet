@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Past Bets — SideBet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="past-bets">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">SideBet</span>
+  </a>
+  <div class="menu-wrap">
+    <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">
+      <span class="menu-lines"><span></span><span></span><span></span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Site navigation">
+      <a href="index.html" data-page="home"><span>Home</span><span>›</span></a>
+      <a href="create-bet.html" data-page="create"><span>Create Bet</span><span>＋</span></a>
+      <div class="menu-separator"></div>
+      <a href="my-bets.html" data-page="my-bets"><span>My Bets</span><span>›</span></a>
+      <a href="past-bets.html" data-page="past-bets"><span>Past Bets</span><span>›</span></a>
+      <a href="profile.html" data-page="profile"><span>Profile</span><span>›</span></a>
+    </nav>
+  </div>
+</header>
+
+
+<main class="page-shell">
+  <div class="page-head">
+    <div>
+      <span class="eyebrow">PAST BETS</span>
+      <h1 class="page-title">History</h1>
+      <p class="page-subtitle">Closed markets in calendar order with forgiving search for partial words, related terms, and small misspellings.</p>
+    </div>
+  </div>
+
+  <section class="search-card card">
+    <div class="search-box">
+      <span>⌕</span>
+      <input id="search" type="search" placeholder="Search baby, football, roommate, office..." />
+    </div>
+    <div class="segment">
+      <button class="active" type="button" data-history-filter="all">All</button>
+      <button type="button" data-history-filter="won">Won</button>
+      <button type="button" data-history-filter="lost">Lost</button>
+    </div>
+  </section>
+
+  <div id="history" class="history-list"></div>
+</main>
+
+<script src="common.js"></script>
+<script src="page.js"></script>
+</body>
+</html>

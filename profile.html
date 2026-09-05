@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile — SideBet</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-page="profile">
+
+<header class="site-header">
+  <a class="brand" href="index.html">
+    <span class="brand-mark">S</span>
+    <span class="brand-name">SideBet</span>
+  </a>
+  <div class="menu-wrap">
+    <button class="menu-button" type="button" aria-label="Open navigation" aria-expanded="false">
+      <span class="menu-lines"><span></span><span></span><span></span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Site navigation">
+      <a href="index.html" data-page="home"><span>Home</span><span>›</span></a>
+      <a href="create-bet.html" data-page="create"><span>Create Bet</span><span>＋</span></a>
+      <div class="menu-separator"></div>
+      <a href="my-bets.html" data-page="my-bets"><span>My Bets</span><span>›</span></a>
+      <a href="past-bets.html" data-page="past-bets"><span>Past Bets</span><span>›</span></a>
+      <a href="profile.html" data-page="profile"><span>Profile</span><span>›</span></a>
+    </nav>
+  </div>
+</header>
+
+
+<main class="page-shell">
+  <div class="profile-shell">
+    <div class="profile-top">
+      <div id="avatar" class="avatar">GH</div>
+      <div>
+        <span class="eyebrow">PROFILE</span>
+        <h1 id="name">Grady</h1>
+        <p id="handle">@sidebet</p>
+      </div>
+    </div>
+
+    <div class="profile-stats">
+      <div><span>Active Bets</span><strong id="active">0</strong></div>
+      <div><span>Closed Bets</span><strong id="closed">0</strong></div>
+      <div><span>Win Rate</span><strong id="winRate">0%</strong></div>
+    </div>
+
+    <section class="profile-section">
+      <h2>Account</h2>
+      <form id="profileForm" class="form-card card">
+        <div class="form-grid">
+          <label><span>Display name</span><input id="profileName" type="text" required></label>
+          <label><span>Handle</span><input id="profileHandle" type="text" required></label>
+          <label><span>Initials</span><input id="profileInitials" type="text" maxlength="3" required></label>
+        </div>
+        <p id="profileMessage" class="form-message" style="color:var(--positive);"></p>
+        <div class="form-actions"><button class="btn btn-gold" type="submit">Save Profile</button></div>
+      </form>
+    </section>
+
+    <section class="profile-section">
+      <h2>Navigation</h2>
+      <a class="profile-link" href="my-bets.html"><div><strong>My Bets</strong><span>Active markets and tracked equity</span></div><span class="chev">›</span></a>
+      <a class="profile-link" href="past-bets.html"><div><strong>Past Bets</strong><span>Closed markets and outcomes</span></div><span class="chev">›</span></a>
+      <a class="profile-link" href="create-bet.html"><div><strong>Create Bet</strong><span>Build a new custom market</span></div><span class="chev">›</span></a>
+    </section>
+
+    <section class="profile-section">
+      <h2>Data</h2>
+      <button id="export" class="profile-action" type="button"><div><strong>Export SideBet Data</strong><span>Save a local backup file</span></div><span class="chev">↓</span></button>
+      <label class="profile-action" style="cursor:pointer;"><div><strong>Import SideBet Data</strong><span>Restore a local backup file</span></div><span class="chev">↑</span><input id="import" type="file" accept=".json,application/json" hidden></label>
+    </section>
+  </div>
+</main>
+
+<script src="common.js"></script>
+<script src="page.js"></script>
+</body>
+</html>
