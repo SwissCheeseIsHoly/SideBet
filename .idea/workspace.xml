@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="6df9f6ca-f1f5-43b6-8d96-45ca204746df" name="Changes" comment="App Version 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create-bet.html" beforeDir="false" afterPath="$PROJECT_DIR$/create-bet.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/market.html" beforeDir="false" afterPath="$PROJECT_DIR$/market.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/page.js" beforeDir="false" afterPath="$PROJECT_DIR$/page.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
