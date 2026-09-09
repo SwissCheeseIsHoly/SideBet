@@ -1,5 +1,5 @@
 
-(() => {
+(async () => {
   const SB=window.SideBet;
   let state=SB.load();
 
@@ -276,7 +276,7 @@
     document.querySelectorAll("[data-payout]").forEach(b=>b.addEventListener("click",()=>setPayout(b.dataset.payout)));
     qs("addOption").addEventListener("click",()=>addOption(""));
 
-    qs("createForm").addEventListener("submit",e=>{
+    qs("createForm").addEventListener("submit",async e=>{
       e.preventDefault();
       const title=qs("title").value.trim(), question=qs("question").value.trim(), unit=qs("unit").value.trim();
       const date=qs("date").value, time=qs("time").value, rules=qs("rules").value.trim();
@@ -295,27 +295,141 @@
       const deadline=new Date(`${date}T${time}:00`);
       if(Number.isNaN(deadline.getTime()))return msg.textContent="Enter a valid deadline.";
 
-      const market={
-        id:SB.makeId(),title,question,group:qs("group").value,unit,deadline:deadline.toISOString(),payout,
-        description:qs("description").value.trim(),rules,
-        options:names.map(name=>({id:SB.makeId(),name})),
-        entries:[],resolution:null,closedAt:null,createdAt:new Date().toISOString(),
-        series:SB.demoSeries(Math.floor(Math.random()*40),56,50)
+      const user = await window.ensureSideBetUser();
+
+      if (!user) {
+        return msg.textContent = "Could not connect to SideBet. Try again.";
+      }
+
+      msg.textContent = "Creating market...";
+
+      const { data: newMarket, error: marketError } = await window.sidebetSupabase
+          .from("markets")
+          .insert({
+            creator_id: user.id,
+            title: title,
+            question: question,
+            group_name: qs("group").value,
+            unit_label: unit,
+            deadline: deadline.toISOString(),
+            payout_type: payout,
+            description: qs("description").value.trim(),
+            rules: rules
+          })
+          .select()
+          .single();
+
+      if (marketError) {
+        console.error("Market creation failed:", marketError);
+        return msg.textContent = "Could not create market.";
+      }
+
+      const { data: savedOptions, error: optionsError } = await window.sidebetSupabase
+          .from("market_options")
+          .insert(
+              names.map(name => ({
+                market_id: newMarket.id,
+                name: name
+              }))
+          )
+          .select();
+
+      if (optionsError) {
+        console.error("Option creation failed:", optionsError);
+        return msg.textContent = "Market created, but options failed to save.";
+      }
+
+      const market = {
+        id: newMarket.id,
+        title,
+        question,
+        group: qs("group").value,
+        unit,
+        deadline: deadline.toISOString(),
+        payout,
+        description: qs("description").value.trim(),
+        rules,
+        options: savedOptions.map(option => ({
+          id: option.id,
+          name: option.name
+        })),
+        entries: [],
+        resolution: null,
+        closedAt: null,
+        createdAt: newMarket.created_at,
+        series: SB.demoSeries(Math.floor(Math.random() * 40), 56, 50)
       };
-      state.markets.unshift(market);SB.save(state);
-      location.href=`market.html?id=${encodeURIComponent(market.id)}`;
+
+      state.markets.unshift(market);
+      SB.save(state);
+
+      location.href = `market.html?id=${encodeURIComponent(market.id)}`;
     });
   }
 
   if (document.body.dataset.page==="market") {
-    const id=new URLSearchParams(location.search).get("id");
-    const market=SB.getMarket(state,id);
-    let range="1M";
+    const id = new URLSearchParams(location.search).get("id");
+    let range = "1M";
 
-    if(!market){
-      qs("market").innerHTML=`<div class="empty">Market not found. <a href="my-bets.html" style="color:var(--gold-3);font-weight:800;">Return to My Bets.</a></div>`;
+    const { data: dbMarket, error: marketLoadError } =
+        await window.sidebetSupabase
+            .from("markets")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+    if (marketLoadError || !dbMarket) {
+      console.error("Market load failed:", marketLoadError);
+      qs("market").innerHTML =
+          `<div class="empty">Market not found. <a href="my-bets.html">Return to My Bets</a></div>`;
       return;
     }
+
+    const { data: dbOptions, error: optionsLoadError } =
+        await window.sidebetSupabase
+            .from("market_options")
+            .select("*")
+            .eq("market_id", id)
+            .order("created_at", { ascending: true });
+
+    if (optionsLoadError) {
+      console.error("Option load failed:", optionsLoadError);
+      qs("market").innerHTML =
+          `<div class="empty">Could not load market options.</div>`;
+      return;
+    }
+
+    const market = {
+      id: dbMarket.id,
+      title: dbMarket.title,
+      question: dbMarket.question,
+      group: dbMarket.group_name,
+      unit: dbMarket.unit_label,
+      deadline: dbMarket.deadline,
+      payout: dbMarket.payout_type,
+      description: dbMarket.description || "",
+      rules: dbMarket.rules,
+      options: dbOptions.map(option => ({
+        id: option.id,
+        name: option.name
+      })),
+      entries: [],
+      resolution: null,
+      closedAt: dbMarket.closed_at,
+      createdAt: dbMarket.created_at,
+      series: SB.demoSeries(Math.floor(Math.random() * 40), 56, 50)
+    };
+
+    state = SB.load();
+
+    const existingIndex = state.markets.findIndex(m => m.id === market.id);
+
+    if (existingIndex >= 0) {
+      state.markets[existingIndex] = market;
+    } else {
+      state.markets.unshift(market);
+    }
+    SB.save(state);
 
     function render(){
       state=SB.load();
@@ -364,7 +478,7 @@
 
     document.querySelectorAll("[data-range]").forEach(b=>b.addEventListener("click",()=>{range=b.dataset.range;updateChart();}));
 
-    qs("join").addEventListener("click",()=>{
+    qs("join").addEventListener("click",async ()=>{
       const m=SB.getMarket(SB.load(),id);
       const name=prompt("Name:",state.profile.name);
       if(!name)return;
@@ -374,10 +488,52 @@
       if(!opt){alert("Pick one of the listed options.");return;}
       const amount=Number(prompt(`Pledge amount (${m.unit}):`));
       if(!Number.isFinite(amount)||amount<=0){alert("Enter a positive amount.");return;}
-      m.entries.push({id:SB.makeId(),name:name.trim(),optionId:opt.id,amount,createdAt:new Date().toISOString()});
-      const last=SB.currentPrice(m);
-      m.series.push(Math.max(4,Math.min(96,last+(Math.random()*4-1.2))));
-      SB.save(state);render();
+      const user = await window.ensureSideBetUser();
+
+      if (!user) {
+        alert("Could not connect to SideBet.");
+        return;
+      }
+
+      const { data: newPosition, error: positionError } =
+          await window.sidebetSupabase
+              .from("positions")
+              .insert({
+                market_id: m.id,
+                option_id: opt.id,
+                user_id: user.id,
+                display_name: name.trim(),
+                amount: amount
+              })
+              .select()
+              .single();
+
+      if (positionError) {
+        console.error("Pledge failed:", positionError);
+        alert("Could not save pledge.");
+        return;
+      }
+
+      state = SB.load();
+
+      const localMarket = SB.getMarket(state, id);
+
+      localMarket.entries.push({
+        id: newPosition.id,
+        name: newPosition.display_name,
+        optionId: newPosition.option_id,
+        amount: Number(newPosition.amount),
+        createdAt: newPosition.created_at
+      });
+
+      const last = SB.currentPrice(localMarket);
+
+      localMarket.series.push(
+          Math.max(4, Math.min(96, last + (Math.random() * 4 - 1.2)))
+      );
+
+      SB.save(state);
+      render();
     });
 
     render();
