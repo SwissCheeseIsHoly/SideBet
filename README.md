@@ -16,7 +16,7 @@ SideBet records credits and acknowledgments. It does not hold money, transfer pa
 
 ## Run locally
 
-Use Node.js 24 and pnpm 10.
+Use Node.js 24 and pnpm 11.25.0.
 
 ```sh
 corepack enable
@@ -37,7 +37,7 @@ pnpm preview
 
 The app uses React, TypeScript, and Vite with Supabase Auth and PostgreSQL. Database permissions and transactional functions enforce who may join a bet, confirm a result, and acknowledge a settlement. The frontend can be hosted on GitHub Pages; Supabase stores shared data.
 
-The configured Supabase project is `rrfiyvflpzegpzrcpdhd`. Its API hostname failed a read-only DNS check on October 1, 2026, although other public hosts resolved. Confirm the project is active and its URL is current before testing real accounts. No changes were made to the hosted database or Auth settings during that check.
+The existing Supabase project `rrfiyvflpzegpzrcpdhd` was resumed on October 1, 2026. The social schema and authentication redirect URLs are installed. A transactional live test passed the complete two-user friendship → bet → result → IOU → settlement flow, then rolled back its test data. Public signup and password-reset emails still require the owner’s custom SMTP provider to be configured.
 
 [Setup](docs/SETUP.md) covers migration, email confirmation, production configuration, and a two-account acceptance test. The [GitHub Actions workflow](.github/workflows/deploy.yml) tests and builds pull requests; only `main` can deploy to Pages. The intended production URL is [SideBet on GitHub Pages](https://swisscheeseisholy.github.io/SideBet/).
 

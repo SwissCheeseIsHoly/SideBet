@@ -4,7 +4,7 @@
 
 Open [the SideBet project dashboard](https://supabase.com/dashboard/project/rrfiyvflpzegpzrcpdhd). Confirm it is active; resume it if the dashboard reports that it is paused. Use the project's Connect dialog to verify the project URL and browser publishable key.
 
-The current URL is `https://rrfiyvflpzegpzrcpdhd.supabase.co`. On October 1, 2026, this hostname did not resolve during a read-only connection check. Other public hosts resolved successfully. This does not establish whether the project is paused, removed, or has a different URL; the dashboard is the next place to check.
+The current URL is `https://rrfiyvflpzegpzrcpdhd.supabase.co`. On October 1, 2026, the paused project was resumed and reported healthy. The new SideBet migration was applied successfully; all four original public tables were preserved.
 
 Copy `.env.example` to `.env.local`. If the dashboard shows different values, update `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`. Restart Vite after changing them. Both values are compiled into the browser bundle; use only a publishable key. Never use a `service_role` key, secret key, database password, or personal access token. [Supabase API key documentation](https://supabase.com/docs/guides/getting-started/api-keys).
 
@@ -19,13 +19,13 @@ The frontend cannot create its own production schema. Apply [202610010001_sidebe
 
 Read the migration before running it against a project containing existing data. The migration supplies the app's tables, row-level security policies, and authenticated application functions. Do not disable row-level security to work around an error. Do not run the frontend with a privileged key.
 
-The migration is kept in source control; this guide does not imply that it has already been applied to the hosted project. Original local-storage data is not automatically migrated into shared accounts.
+Migration `202610010001_sidebet.sql` was applied to this hosted project on October 1, 2026. Do not re-run it on the same project; these steps are for a fresh installation. Original local-storage data is not automatically migrated into shared accounts.
 
 ## 3. Configure email authentication
 
 In Supabase **Authentication**, enable email/password sign-in. If email confirmation is enabled, a new user must follow the confirmation email before signing in. The application does not require anonymous sign-ins.
 
-Under **Authentication → URL Configuration**, use:
+The following URLs were saved in **Authentication → URL Configuration** on October 1, 2026:
 
 | Setting | Value |
 | --- | --- |
@@ -36,11 +36,13 @@ Under **Authentication → URL Configuration**, use:
 
 If Vite starts on a different port, allow that exact local URL too. Use the app's base URL for authentication redirects. App navigation and invitation links use URL fragments, so GitHub Pages does not need server routing rules. Keep the trailing slash on `/SideBet/`.
 
-Send a test confirmation email and follow it back into the app. If you have customized Supabase email templates, ensure their links use the configured redirect correctly. See [Supabase redirect URL documentation](https://supabase.com/docs/guides/auth/redirect-urls).
+Custom SMTP is not configured yet. The default Supabase sender only delivers to project team addresses, so public signup/password recovery is blocked until the owner’s provider is connected. Configure it in **Authentication → Emails → SMTP Settings**, with SMTP credentials entered directly in the dashboard. Keep email confirmation enabled. See [Supabase SMTP requirements](https://supabase.com/docs/guides/auth/auth-smtp).
+
+After SMTP is configured, send a test confirmation email and follow it back into the app. If you have customized Supabase email templates, ensure their links use the configured redirect correctly. See [Supabase redirect URL documentation](https://supabase.com/docs/guides/auth/redirect-urls).
 
 ## 4. Validate locally
 
-Use Node.js 24 and pnpm 10:
+Use Node.js 24 and pnpm 11.25.0:
 
 ```sh
 corepack enable
@@ -82,7 +84,7 @@ After deployment, repeat the two-account test on the production URL, including o
 
 Each joined participant agrees to the same fixed credit stake. Winners share each losing participant's stake equally, calculated in hundredths of a credit. Any indivisible remainder is assigned by a stable participant ID order so credits are not lost through rounding. If everybody wins or nobody wins, no debt is created.
 
-Credit obligations are recorded only after all joined participants approve the proposed result. Rejecting a result returns the bet to locked status so the host can propose a new result. Choices can change only while the bet is open and before its deadline. The host can cancel only while the bet is open.
+Credit obligations are recorded only after all joined participants approve the proposed result. Rejecting a result returns the bet to locked status so a joined player can propose a new result. Choices can change only while the bet is open and before its deadline. The host can cancel only while the bet is open.
 
 The ledger records debts between people. There is no funded wallet or payment processor. A note saying “Paid 40 via Venmo” is a claim from the debtor; SideBet does not send or verify that payment. The creditor must accept the note before the ledger decreases. A declined or pending note changes no balance.
 
@@ -96,6 +98,6 @@ Pending settlement notes reserve the amount against that person's debt to avoid 
 | Sign-in works but app data fails | Confirm all checked-in migrations were applied successfully to the same project used by the frontend. |
 | Account created but cannot sign in | Complete email confirmation, check spam, and verify the project's email settings. |
 | Confirmation link opens the wrong site | Check Site URL, allowed redirect URLs, and any customized email templates. |
-| CI installation fails with a frozen lockfile error | Run `pnpm install` locally using pnpm 10 and commit the updated lockfile with dependency changes. |
+| CI installation fails with a frozen lockfile error | Run `pnpm install` locally using pnpm 11.25.0 and commit the updated lockfile with dependency changes. |
 | Pages workflow cannot deploy | Set Pages source to GitHub Actions and confirm the run uses `main` and the `github-pages` environment permits it. |
 | Local changes work but production does not | Confirm the intended commit reached `main` and its deployment finished; environment values take effect only after a build. |

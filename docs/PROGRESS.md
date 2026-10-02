@@ -6,6 +6,23 @@ The original course-repository copy is unchanged.
 
 Goal: social profiles, friend links/codes/QR, private credit-only group challenges, participant-confirmed results, pairwise IOUs, recipient-approved settlement notes. Existing Supabase project requested by user. Never silently treat local demo data as shared real accounts.
 
-Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + PostgreSQL with RLS and transactional RPCs. Standalone demo for preview. GitHub Pages build workflow. SQL migration must be applied to the existing project before live features work.
+Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + PostgreSQL with RLS and transactional RPCs. Standalone demo for preview. GitHub Pages build workflow.
 
-In progress: UI, database/RPCs, client/demo adapter. Save tracked files in small Git commits; never commit credentials, .env, node_modules, or test-generated data. Supabase publishable key is public by design; database permissions must enforce security.
+## Completed October 1, 2026
+
+- Rebuilt the responsive landing page and application: profiles, friend requests and shareable codes/links/QR, group bets, comments, unanimous result confirmation, IOU ledger, settlement approval, and inbox.
+- Added signup, login, email recovery, pending invitation preservation, account-scoped data loading, and a separate persistent demo.
+- Resumed the existing Supabase project and installed the new schema. All original tables remain intact. Nine new tables have row-level security; authenticated functions enforce mutations.
+- Passed a hosted PostgreSQL two-user lifecycle test, with all synthetic test rows rolled back. No real payment or email was sent.
+- Saved production and localhost authentication redirect URLs.
+- Passed 38 automated tests and the production build. Browser checks covered creating and joining bets, comments, result confirmation, friend acceptance, QR/link display, partial settlement submission, and incoming settlement acceptance.
+- Added the locked-dependency GitHub Pages workflow: pull requests validate; main deploys.
+- Saved incremental local Git checkpoints through `7cf35be`, with a remote backup branch at `codex/social-sidebet`.
+
+## Remaining launch steps
+
+1. Owner completes SMTP credential entry directly in Supabase. Gmail SMTP non-secret fields are prepared in the dashboard; no credential is stored in this repository. Custom SMTP is not confirmed saved yet.
+2. Verify real signup confirmation and password recovery after email delivery is configured.
+3. Review and merge the rebuild pull request, then verify the Pages deployment and the two-account flow on the public URL. The public site still serves the earlier version until that deployment.
+
+See `docs/VERIFICATION.md` for validation scope and the security advisor review. Never commit credentials, `.env`, `node_modules`, or generated test data. The Supabase publishable key is public by design; database permissions enforce security.
