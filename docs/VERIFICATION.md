@@ -23,4 +23,4 @@ The project’s leaked-password protection is disabled. It was left unchanged; s
 
 ## Not yet verified
 
-Custom SMTP was saved by the owner and remains enabled after a dashboard reload. Public email sign-up, confirmation, and password recovery still need a real-email end-to-end test; configuration persistence does not prove delivery. Shared database behavior is verified. The old browser-only data is preserved under `legacy/` and is not imported as real debts.
+Custom SMTP was saved by the owner and remains enabled after a dashboard reload. A real signup attempt returned `Error sending confirmation email`. Supabase Auth logs for October 2, 16:00–16:23 UTC identify Gmail SMTP rejection `535 5.7.8 Username and Password not accepted` on `/signup` (HTTP 500). Sender, SMTP username, host, and port were checked; the credential needs replacement directly by the owner. Signup confirmation and password recovery are blocked until SMTP authentication succeeds. Shared database behavior is verified. The old browser-only data is preserved under `legacy/` and is not imported as real debts.

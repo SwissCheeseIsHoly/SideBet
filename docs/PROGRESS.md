@@ -22,8 +22,8 @@ Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + Postg
 
 ## Remaining launch steps
 
-1. SMTP configuration is complete: the owner entered the credential directly in Supabase, and enabled status persisted after a dashboard reload. No credential is stored in this repository.
-2. Verify real signup confirmation and password recovery. The owner’s signup form is open in the local preview; actual email delivery has not yet been confirmed.
+1. SMTP settings are saved, but the real signup attempt failed. Supabase Auth logs on October 2 show Gmail SMTP error `535 5.7.8 Username and Password not accepted`. The saved sender/username, host, and port were checked. The owner must replace the rejected credential directly in Supabase with a valid Google app password. No credential is stored in this repository.
+2. Retry real signup confirmation and password recovery after correcting SMTP authentication. The signup request reached Supabase; the failure occurred while sending its confirmation email.
 3. Review and merge the rebuild pull request, then verify the Pages deployment and the two-account flow on the public URL. The public site still serves the earlier version until that deployment.
 
 GitHub Pages source is now set to GitHub Actions (saved and verified October 2, 2026), ready for the checked-in workflow.
