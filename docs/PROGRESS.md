@@ -26,4 +26,6 @@ Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + Postg
 2. Verify real signup confirmation and password recovery. The owner’s signup form is open in the local preview; actual email delivery has not yet been confirmed.
 3. Review and merge the rebuild pull request, then verify the Pages deployment and the two-account flow on the public URL. The public site still serves the earlier version until that deployment.
 
+GitHub Pages source is now set to GitHub Actions (saved and verified October 2, 2026), ready for the checked-in workflow.
+
 See `docs/VERIFICATION.md` for validation scope and the security advisor review. Never commit credentials, `.env`, `node_modules`, or generated test data. The Supabase publishable key is public by design; database permissions enforce security.

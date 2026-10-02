@@ -9,6 +9,7 @@
 - Site URL and exact production/local Auth redirects saved.
 - [GitHub Actions run 36958267572](https://github.com/SwissCheeseIsHoly/SideBet/actions/runs/36958267572) passed locked dependency installation, tests, and build on Ubuntu with Node 24; the PR did not deploy.
 - The compiled production application loaded successfully through `vite preview` on port 4173. The in-app preview was visually checked at 319 pixels wide.
+- GitHub Pages publishing source was changed to GitHub Actions and its saved state verified on October 2, 2026. The rebuild has not been merged or deployed.
 
 ## Advisor review
 

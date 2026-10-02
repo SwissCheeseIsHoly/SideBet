@@ -72,6 +72,8 @@ In [repository settings](https://github.com/SwissCheeseIsHoly/SideBet/settings/p
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
+The repository's Pages source was set to GitHub Actions on October 2, 2026. The rebuild remains on its pull-request branch until release; changing the source did not deploy it.
+
 The values are public browser configuration, not privileged secrets. Rebuild after changing them. The app uses its existing project configuration when overrides are not supplied.
 
 The workflow installs from `pnpm-lock.yaml`, runs tests, and produces a production build. Pull requests targeting `main` run validation without publishing. A push to `main`, including a merged pull request, publishes the successful build. You can also run the workflow manually on `main`; a manual run on another branch validates without publishing.
