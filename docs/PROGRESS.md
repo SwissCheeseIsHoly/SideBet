@@ -22,7 +22,7 @@ Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + Postg
 
 ## Remaining launch steps
 
-1. SMTP settings are saved, but real signup attempts failed with Gmail SMTP error `535 5.7.8 Username and Password not accepted`. After switching to the intended Chrome profile, Google Security showed **2-Step Verification is off**, and App passwords reported the setting unavailable. The owner had been using Google Password Manager, which does not create SMTP app passwords. The correct 2-Step Verification setup page is now open for the owner. After enabling it, the owner must generate a Google app password and enter it directly in Supabase. No credential is stored in this repository.
+1. SMTP settings are saved, but earlier signup attempts failed with Gmail SMTP error `535 5.7.8 Username and Password not accepted`. The intended Google account initially had 2-Step Verification off. The owner has now enabled it, and Google’s App passwords page lists a newly created `sidebet` entry (4:15 PM, October 2). Supabase SMTP settings are open in that same Chrome profile, with sender/username and connection settings verified. The owner must paste the newly generated credential directly into Supabase, save, and retry signup. Chrome’s saved-password suggestions must not substitute an unrelated credential. No credential is stored in this repository.
 2. Retry real signup confirmation and password recovery after correcting SMTP authentication. The signup request reached Supabase; the failure occurred while sending its confirmation email.
 3. Review and merge the rebuild pull request, then verify the Pages deployment and the two-account flow on the public URL. The public site still serves the earlier version until that deployment.
 
