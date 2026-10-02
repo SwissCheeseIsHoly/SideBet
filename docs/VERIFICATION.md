@@ -1,0 +1,36 @@
+# Verification record — October 1, 2026
+
+- Production build passes (React, TypeScript, Vite).
+- 38 automated tests pass: 21 PostgreSQL integration checks through PGlite and 17 demo behavior checks.
+- Browser checks: responsive landing/dashboard; create a group bet; join an invitation and add a comment; provide the final result confirmation and verify the new 5-credit IOU; accept a friend request; display a personal invite link/code/QR; accept an incoming 40-credit note (owed total decreased 80 → 40); send a partial note (owed balance remains unchanged pending recipient confirmation).
+- Existing Supabase project resumed; all four original public tables preserved.
+- `202610010001_sidebet.sql` applied successfully. Nine new tables have RLS enabled. `anon` cannot execute snapshot; authenticated users cannot directly insert credit obligations.
+- `supabase/verify-live.sql` passed on the hosted PostgreSQL instance. Two synthetic users connected, created/joined a bet, unanimously confirmed the result, generated 40 credits owed, declined a partial settlement without changing the balance, accepted the full settlement, and rejected duplicate acceptance. All test rows rolled back. No emails or real payments were sent.
+- Site URL and exact production/local Auth redirects saved.
+- [GitHub Actions run 36958267572](https://github.com/SwissCheeseIsHoly/SideBet/actions/runs/36958267572) passed locked dependency installation, tests, and build on Ubuntu with Node 24; the PR did not deploy.
+- The compiled production application loaded successfully through `vite preview` on port 4173. The in-app preview was visually checked at 319 pixels wide.
+- GitHub Pages publishing source was changed to GitHub Actions and its saved state verified on October 2, 2026. The rebuild has not been merged or deployed.
+
+## Advisor review
+
+Supabase’s security advisor was run after migration. The authenticated `SECURITY DEFINER` endpoints are intentional: users have no direct write privileges; each RPC checks identity, ownership/membership, lifecycle, amounts, and recipient consent. These checks are covered by integration tests. Private helper execution is revoked. The allocation table intentionally has no client policy or privileges (deny all); RPCs maintain its audit records.
+
+[Security-definer advisor guidance](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable). [Deny-all RLS policy guidance](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+
+The project has pre-existing anonymous Auth enabled. The new frontend uses email accounts, and its policies restrict rows to the caller’s relationships and participation. Anonymous Auth identities still have unique IDs and cannot read unrelated data. [Anonymous Auth policy guidance](https://supabase.com/docs/guides/database/database-advisors?lint=0012_auth_allow_anonymous_sign_ins).
+
+The project’s leaked-password protection is disabled. It was left unchanged; see [Supabase password security](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+
+## Email authentication verification — October 2
+
+Initial signup attempts failed with Gmail SMTP `535 5.7.8` because a valid Google app password had not been configured. The correct Google account had 2-Step Verification off; the owner enabled it, generated an app password, and entered it directly in Supabase. The credential was neither read nor stored by the agent.
+
+- Supabase reloaded the corrected configuration at 21:16:53 UTC.
+- `/signup` returned HTTP 200 at 21:17:33 UTC, with no error.
+- The owner confirmed that the signup email arrived.
+- `/verify` returned HTTP 303 at 21:17:57 UTC, with no error.
+- The authenticated Chrome dashboard showed an empty real account, and the owner reported successful login with the new SideBet credentials.
+
+## Not yet verified
+
+Real password-recovery email delivery and a two-account browser acceptance test remain to be checked. The hosted two-user database lifecycle is verified, but that does not claim a full two-browser production test. The rebuild has not yet been deployed. The old browser-only data is preserved under `legacy/` and is not imported as real debts.
