@@ -931,7 +931,10 @@ export default function App() {
         </div>
       ) : (
         <div className="app-layout">
-          <aside className={`sidebar ${mobileNav ? "mobile-open" : ""}`}>
+          <aside
+            id="main-sidebar"
+            className={`sidebar ${mobileNav ? "mobile-open" : ""}`}
+          >
             <a
               href="#home"
               className="brand-link"
@@ -1010,6 +1013,8 @@ export default function App() {
                 <button
                   className="icon-button mobile-toggle"
                   aria-label="Open navigation"
+                  aria-controls="main-sidebar"
+                  aria-expanded={mobileNav}
                   onClick={() => setMobileNav(true)}
                 >
                   <Menu />

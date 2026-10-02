@@ -2991,12 +2991,14 @@ input[type="radio"] {
 }
 @media (max-width: 760px) {
   .sidebar {
+    visibility: hidden;
     transform: translateX(-100%);
     transition: transform 0.2s;
     width: 245px;
     padding: 30px 20px 20px;
   }
   .sidebar.mobile-open {
+    visibility: visible;
     transform: translateX(0);
   }
   .mobile-close {

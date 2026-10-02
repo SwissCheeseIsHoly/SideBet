@@ -7,6 +7,8 @@
 - `202610010001_sidebet.sql` applied successfully. Nine new tables have RLS enabled. `anon` cannot execute snapshot; authenticated users cannot directly insert credit obligations.
 - `supabase/verify-live.sql` passed on the hosted PostgreSQL instance. Two synthetic users connected, created/joined a bet, unanimously confirmed the result, generated 40 credits owed, declined a partial settlement without changing the balance, accepted the full settlement, and rejected duplicate acceptance. All test rows rolled back. No emails or real payments were sent.
 - Site URL and exact production/local Auth redirects saved.
+- [GitHub Actions run 36958267572](https://github.com/SwissCheeseIsHoly/SideBet/actions/runs/36958267572) passed locked dependency installation, tests, and build on Ubuntu with Node 24; the PR did not deploy.
+- The compiled production application loaded successfully through `vite preview` on port 4173. The in-app preview was visually checked at 319 pixels wide.
 
 ## Advisor review
 

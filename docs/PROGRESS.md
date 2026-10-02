@@ -18,6 +18,7 @@ Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + Postg
 - Passed 38 automated tests and the production build. Browser checks covered creating and joining bets, comments, result confirmation, friend acceptance, QR/link display, partial settlement submission, and incoming settlement acceptance.
 - Added the locked-dependency GitHub Pages workflow: pull requests validate; main deploys.
 - Saved incremental local Git checkpoints through `7cf35be`, with a remote backup branch at `codex/social-sidebet`.
+- Opened [pull request #1](https://github.com/SwissCheeseIsHoly/SideBet/pull/1). [GitHub Actions validation](https://github.com/SwissCheeseIsHoly/SideBet/actions/runs/36958267572) passed locked installation, all tests, and the production build. Deployment was correctly skipped for the pull request.
 
 ## Remaining launch steps
 
