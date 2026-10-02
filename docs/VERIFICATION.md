@@ -21,10 +21,16 @@ The project has pre-existing anonymous Auth enabled. The new frontend uses email
 
 The project’s leaked-password protection is disabled. It was left unchanged; see [Supabase password security](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
 
+## Email authentication verification — October 2
+
+Initial signup attempts failed with Gmail SMTP `535 5.7.8` because a valid Google app password had not been configured. The correct Google account had 2-Step Verification off; the owner enabled it, generated an app password, and entered it directly in Supabase. The credential was neither read nor stored by the agent.
+
+- Supabase reloaded the corrected configuration at 21:16:53 UTC.
+- `/signup` returned HTTP 200 at 21:17:33 UTC, with no error.
+- The owner confirmed that the signup email arrived.
+- `/verify` returned HTTP 303 at 21:17:57 UTC, with no error.
+- The authenticated Chrome dashboard showed an empty real account, and the owner reported successful login with the new SideBet credentials.
+
 ## Not yet verified
 
-Custom SMTP was saved by the owner and remains enabled after a dashboard reload. A real signup attempt returned `Error sending confirmation email`. Supabase Auth logs for October 2, 16:00–16:23 UTC identify Gmail SMTP rejection `535 5.7.8 Username and Password not accepted` on `/signup` (HTTP 500). Sender, SMTP username, host, and port were checked; the credential needs replacement directly by the owner. Signup confirmation and password recovery are blocked until SMTP authentication succeeds. Shared database behavior is verified. The old browser-only data is preserved under `legacy/` and is not imported as real debts.
-
-Later attempts at 19:49 and 19:52 UTC returned the same Gmail rejection after configuration reloads. Checking the intended Google account directly revealed that 2-Step Verification is off and App passwords are unavailable. The owner is completing 2-Step Verification before generating the required SMTP app password; passwords saved in Google Password Manager do not supply this credential.
-
-Follow-up: Google now visibly confirms 2-Step Verification is on, and its App passwords page lists `sidebet`, created at 4:15 PM on October 2. A fresh Supabase settings tab in that Chrome profile confirms the SMTP account, host, and port. Credential replacement and a successful signup email remain pending; the generated password was neither read nor stored by the agent.
+Real password-recovery email delivery and a two-account browser acceptance test remain to be checked. The hosted two-user database lifecycle is verified, but that does not claim a full two-browser production test. The rebuild has not yet been deployed. The old browser-only data is preserved under `legacy/` and is not imported as real debts.

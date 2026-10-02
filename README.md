@@ -37,7 +37,7 @@ pnpm preview
 
 The app uses React, TypeScript, and Vite with Supabase Auth and PostgreSQL. Database permissions and transactional functions enforce who may join a bet, confirm a result, and acknowledge a settlement. The frontend can be hosted on GitHub Pages; Supabase stores shared data.
 
-The existing Supabase project `rrfiyvflpzegpzrcpdhd` was resumed on October 1, 2026. The social schema and authentication redirect URLs are installed. A transactional live test passed the complete two-user friendship → bet → result → IOU → settlement flow, then rolled back its test data. Custom SMTP is saved and enabled; actual signup and password-reset email delivery remains to be verified before launch.
+The existing Supabase project `rrfiyvflpzegpzrcpdhd` was resumed on October 1, 2026. The social schema and authentication redirect URLs are installed. A transactional live test passed the complete two-user friendship → bet → result → IOU → settlement flow, then rolled back its test data. Custom SMTP is working: real signup email delivery, confirmation, and login were verified on October 2. The password-recovery email flow still needs an end-to-end check.
 
 [Setup](docs/SETUP.md) covers migration, email confirmation, production configuration, and a two-account acceptance test. The [GitHub Actions workflow](.github/workflows/deploy.yml) tests and builds pull requests; only `main` can deploy to Pages. The intended production URL is [SideBet on GitHub Pages](https://swisscheeseisholy.github.io/SideBet/).
 

@@ -20,11 +20,14 @@ Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + Postg
 - Saved incremental local Git checkpoints through `7cf35be`, with a remote backup branch at `codex/social-sidebet`.
 - Opened [pull request #1](https://github.com/SwissCheeseIsHoly/SideBet/pull/1). [GitHub Actions validation](https://github.com/SwissCheeseIsHoly/SideBet/actions/runs/36958267572) passed locked installation, all tests, and the production build. Deployment was correctly skipped for the pull request.
 
+## Authentication verified October 2, 2026
+
+The owner enabled Google 2-Step Verification, generated a Google app password, and saved it directly in Supabase. Signup returned HTTP 200 at 21:17:33 UTC; confirmation returned HTTP 303 with no error at 21:17:57 UTC. The owner received the email, confirmed it, and reported successful login. The authenticated Chrome dashboard showed an empty real account. The earlier Gmail `535` errors are resolved. No credential is stored in this repository.
+
 ## Remaining launch steps
 
-1. SMTP settings are saved, but earlier signup attempts failed with Gmail SMTP error `535 5.7.8 Username and Password not accepted`. The intended Google account initially had 2-Step Verification off. The owner has now enabled it, and Google’s App passwords page lists a newly created `sidebet` entry (4:15 PM, October 2). Supabase SMTP settings are open in that same Chrome profile, with sender/username and connection settings verified. The owner must paste the newly generated credential directly into Supabase, save, and retry signup. Chrome’s saved-password suggestions must not substitute an unrelated credential. No credential is stored in this repository.
-2. Retry real signup confirmation and password recovery after correcting SMTP authentication. The signup request reached Supabase; the failure occurred while sending its confirmation email.
-3. Review and merge the rebuild pull request, then verify the Pages deployment and the two-account flow on the public URL. The public site still serves the earlier version until that deployment.
+1. Review and merge the rebuild pull request, then verify the Pages deployment and login on the public URL. The public site still serves the earlier version until that deployment.
+2. Complete a real password-recovery email check and a two-account browser acceptance test. The shared database lifecycle has already passed the hosted two-user transactional test; these remaining browser checks are listed explicitly in `docs/VERIFICATION.md`.
 
 GitHub Pages source is now set to GitHub Actions (saved and verified October 2, 2026), ready for the checked-in workflow.
 
