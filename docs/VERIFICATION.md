@@ -22,4 +22,4 @@ The project’s leaked-password protection is disabled. It was left unchanged; s
 
 ## Not yet verified
 
-Public email sign-up, confirmation, and password recovery need the owner’s SMTP provider configured. Shared database behavior is verified; no claim of a completed real-email end-to-end test is made. The old browser-only data is preserved under `legacy/` and is not imported as real debts.
+Custom SMTP was saved by the owner and remains enabled after a dashboard reload. Public email sign-up, confirmation, and password recovery still need a real-email end-to-end test; configuration persistence does not prove delivery. Shared database behavior is verified. The old browser-only data is preserved under `legacy/` and is not imported as real debts.

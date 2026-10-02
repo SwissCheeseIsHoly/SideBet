@@ -36,7 +36,7 @@ The following URLs were saved in **Authentication → URL Configuration** on Oct
 
 If Vite starts on a different port, allow that exact local URL too. Use the app's base URL for authentication redirects. App navigation and invitation links use URL fragments, so GitHub Pages does not need server routing rules. Keep the trailing slash on `/SideBet/`.
 
-Custom SMTP is not configured yet. The default Supabase sender only delivers to project team addresses, so public signup/password recovery is blocked until the owner’s provider is connected. Configure it in **Authentication → Emails → SMTP Settings**, with SMTP credentials entered directly in the dashboard. Keep email confirmation enabled. See [Supabase SMTP requirements](https://supabase.com/docs/guides/auth/auth-smtp).
+Custom Gmail SMTP has been saved by the owner and verified enabled after a dashboard reload. This confirms configuration persistence, not email delivery. For a fresh installation, configure **Authentication → Emails → SMTP Settings**, with SMTP credentials entered directly in the dashboard. Keep email confirmation enabled. The default Supabase sender only delivers to project team addresses. See [Supabase SMTP requirements](https://supabase.com/docs/guides/auth/auth-smtp).
 
 After SMTP is configured, send a test confirmation email and follow it back into the app. If you have customized Supabase email templates, ensure their links use the configured redirect correctly. See [Supabase redirect URL documentation](https://supabase.com/docs/guides/auth/redirect-urls).
 

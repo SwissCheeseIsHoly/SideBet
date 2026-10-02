@@ -22,8 +22,8 @@ Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + Postg
 
 ## Remaining launch steps
 
-1. Owner completes SMTP credential entry directly in Supabase. Gmail SMTP non-secret fields are prepared in the dashboard; no credential is stored in this repository. Custom SMTP is not confirmed saved yet.
-2. Verify real signup confirmation and password recovery after email delivery is configured.
+1. SMTP configuration is complete: the owner entered the credential directly in Supabase, and enabled status persisted after a dashboard reload. No credential is stored in this repository.
+2. Verify real signup confirmation and password recovery. The owner’s signup form is open in the local preview; actual email delivery has not yet been confirmed.
 3. Review and merge the rebuild pull request, then verify the Pages deployment and the two-account flow on the public URL. The public site still serves the earlier version until that deployment.
 
 See `docs/VERIFICATION.md` for validation scope and the security advisor review. Never commit credentials, `.env`, `node_modules`, or generated test data. The Supabase publishable key is public by design; database permissions enforce security.
