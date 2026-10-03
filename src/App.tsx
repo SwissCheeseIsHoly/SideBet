@@ -35,6 +35,7 @@ import { QRCodeSVG } from "qrcode.react";
 import type { Action, Bet, Profile, Snapshot } from "./types";
 import { supabase, loadSnapshot, runAction } from "./data";
 import { getDemoSnapshot, runDemoAction, resetDemo } from "./demo";
+import { authErrorMessage, authErrorCode, resendWaitSeconds } from "./auth";
 
 const categories = [
   "All bets",
@@ -216,7 +217,7 @@ export default function App() {
     "create" | "invite" | "auth" | "settle" | "help" | null
   >(null);
   const [authMode, setAuthMode] = useState<
-    "signup" | "login" | "reset" | "recovery"
+    "signup" | "login" | "reset" | "recovery" | "confirm"
   >("signup");
   const [selected, setSelected] = useState<string | null>(null),
     [settleFriend, setSettleFriend] = useState("");
@@ -232,6 +233,31 @@ export default function App() {
     [ready, setReady] = useState(false);
   const [authError, setAuthError] = useState(""),
     [authInfo, setAuthInfo] = useState("");
+  const [authEmail, setAuthEmail] = useState("");
+  const [authName, setAuthName] = useState("");
+  const [resendUntil, setResendUntil] = useState<Record<string, number>>({});
+  const [authNow, setAuthNow] = useState(Date.now());
+  const authInFlight = useRef(false);
+  const openedInvite = useRef("");
+  const emailKey = authEmail.trim().toLowerCase();
+  const resendSeconds = Math.max(
+    0,
+    Math.ceil(((resendUntil[emailKey] || 0) - authNow) / 1000),
+  );
+  function pauseResend(email: string, seconds = 60) {
+    const now = Date.now();
+    setAuthNow(now);
+    setResendUntil((previous) => ({
+      ...previous,
+      [email.trim().toLowerCase()]: now + seconds * 1000,
+    }));
+  }
+  useEffect(() => {
+    if (modal !== "auth" || authMode !== "confirm" || resendSeconds === 0)
+      return;
+    const timer = window.setInterval(() => setAuthNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [modal, authMode, resendSeconds]);
   const scope = useRef<{
     mode: typeof mode;
     userId: string | null;
@@ -378,6 +404,10 @@ export default function App() {
           localStorage.setItem("sidebet_pending_invite", code);
           if ((mode === "live" || mode === "demo") && !recovering.current)
             setModal("invite");
+          else if (mode === "landing" && openedInvite.current !== code) {
+            openedInvite.current = code;
+            openAuth("signup");
+          }
         } catch {
           setError(
             "This invite link is malformed. Ask your friend for a fresh link or enter their code.",
@@ -464,6 +494,8 @@ export default function App() {
     }
   }
   function openAuth(kind: "signup" | "login") {
+    if (authInFlight.current) return;
+    setAuthNow(Date.now());
     authIntent.current = true;
     setAuthMode(kind);
     setAuthError("");
@@ -2106,33 +2138,45 @@ export default function App() {
       {modal === "auth" && (
         <Modal
           title={
-            authMode === "signup"
-              ? "Your people are waiting."
-              : authMode === "login"
-                ? "Welcome back."
-                : authMode === "recovery"
-                  ? "Choose a new password."
-                  : "Let’s get you back in."
+            authMode === "confirm"
+              ? "Check your email—or log in."
+              : authMode === "signup"
+                ? "Your people are waiting."
+                : authMode === "login"
+                  ? "Welcome back."
+                  : authMode === "recovery"
+                    ? "Choose a new password."
+                    : "Let’s get you back in."
           }
           subtitle={
-            authMode === "signup"
-              ? "Make your profile. Find your friends. Call your shot."
-              : authMode === "login"
-                ? "Time to see who called it."
-                : "We’ll help you get back to your circle."
+            authMode === "confirm"
+              ? "New account? Confirm your email to join your circle."
+              : authMode === "signup"
+                ? "Make your profile. Find your friends. Call your shot."
+                : authMode === "login"
+                  ? "Time to see who called it."
+                  : "We’ll help you get back to your circle."
           }
           onClose={close}
         >
           <form
+            key={authMode}
             className="form-stack"
             onSubmit={async (e) => {
               e.preventDefault();
+              if (
+                authInFlight.current ||
+                (authMode === "confirm" && resendSeconds > 0)
+              )
+                return;
+              authInFlight.current = true;
               const f = new FormData(e.currentTarget);
               setBusy(true);
               setAuthError("");
               setAuthInfo("");
               try {
                 const email = String(f.get("email") || "").trim();
+                setAuthEmail(email);
                 const password = String(f.get("password") || "");
                 const redirect = `${location.origin}${location.pathname}`;
                 if (authMode === "signup") {
@@ -2151,10 +2195,10 @@ export default function App() {
                   if (e) throw e;
                   if (data.session) {
                     setModal(null);
-                  } else
-                    setAuthInfo(
-                      "Check your email to confirm your account, then come back and log in.",
-                    );
+                  } else {
+                    pauseResend(email);
+                    setAuthMode("confirm");
+                  }
                 } else if (authMode === "login") {
                   const { error: e } = await supabase.auth.signInWithPassword({
                     email,
@@ -2162,6 +2206,17 @@ export default function App() {
                   });
                   if (e) throw e;
                   setModal(null);
+                } else if (authMode === "confirm") {
+                  const { error: e } = await supabase.auth.resend({
+                    type: "signup",
+                    email,
+                    options: { emailRedirectTo: redirect },
+                  });
+                  if (e) throw e;
+                  pauseResend(email);
+                  setAuthInfo(
+                    "Confirmation requested. If this address has an unconfirmed account, a new link is on its way. Already confirmed? Log in below.",
+                  );
                 } else if (authMode === "reset") {
                   const { error: e } =
                     await supabase.auth.resetPasswordForEmail(email, {
@@ -2182,12 +2237,40 @@ export default function App() {
                   consumeInvite();
                 }
               } catch (e) {
-                setAuthError(shortError(e));
+                setAuthError(authErrorMessage(e));
+                if (
+                  authMode === "login" &&
+                  authErrorCode(e) === "email_not_confirmed"
+                )
+                  setAuthMode("confirm");
+                const wait = resendWaitSeconds(e);
+                if (wait) pauseResend(authEmail, wait);
               } finally {
+                authInFlight.current = false;
                 setBusy(false);
               }
             }}
           >
+            {inviteCode && (
+              <div className="info-box">
+                <Users size={17} /> Your friend’s invitation is saved in this
+                browser. After you log in, you can send your friend request.
+              </div>
+            )}
+            {authMode === "confirm" && (
+              <div className="confirmation-help" role="status">
+                <p>
+                  <strong>If this email is new:</strong> look for a confirmation
+                  link from SideBet. Check spam or junk, and make sure the
+                  address below is your own working mailbox.
+                </p>
+                <p>
+                  <strong>Already created an account?</strong> Log in with your
+                  original password. Signing up again won’t send a new
+                  confirmation for an account that is already confirmed.
+                </p>
+              </div>
+            )}
             {authMode === "signup" && (
               <label>
                 What should we call you?
@@ -2198,6 +2281,8 @@ export default function App() {
                   minLength={2}
                   maxLength={40}
                   autoComplete="name"
+                  value={authName}
+                  onChange={(e) => setAuthName(e.target.value)}
                 />
               </label>
             )}
@@ -2209,12 +2294,16 @@ export default function App() {
                   type="email"
                   placeholder="you@example.com"
                   autoComplete="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
                   required
                   maxLength={254}
                 />
               </label>
             )}
-            {authMode !== "reset" && (
+            {authMode !== "reset" && authMode !== "confirm" && (
               <label>
                 {authMode === "recovery" ? "New password" : "Password"}
                 <input
@@ -2244,22 +2333,50 @@ export default function App() {
                 {authInfo}
               </div>
             )}
-            <button className="primary-btn full-width" disabled={busy}>
+            <button
+              className="primary-btn full-width"
+              disabled={busy || (authMode === "confirm" && resendSeconds > 0)}
+            >
               {busy
                 ? "One moment…"
-                : authMode === "signup"
-                  ? "Create your account"
-                  : authMode === "login"
-                    ? "Log in"
-                    : authMode === "reset"
-                      ? "Send reset link"
-                      : "Update password"}
+                : authMode === "confirm"
+                  ? resendSeconds > 0
+                    ? `Resend available in ${resendSeconds}s`
+                    : "Resend confirmation email"
+                  : authMode === "signup"
+                    ? "Create your account"
+                    : authMode === "login"
+                      ? "Log in"
+                      : authMode === "reset"
+                        ? "Send reset link"
+                        : "Update password"}
               <ArrowRight size={17} />
             </button>
+            {authMode === "confirm" && (
+              <>
+                <button
+                  type="button"
+                  className="secondary-btn full-width"
+                  disabled={busy}
+                  onClick={() => openAuth("login")}
+                >
+                  Already confirmed? Log in <ArrowRight size={17} />
+                </button>
+                <button
+                  type="button"
+                  className="text-btn centered"
+                  disabled={busy}
+                  onClick={() => openAuth("signup")}
+                >
+                  Wrong email? Start again with a different address
+                </button>
+              </>
+            )}
             {authMode === "login" && (
               <button
                 type="button"
                 className="text-btn centered"
+                disabled={busy}
                 onClick={() => {
                   setAuthMode("reset");
                   setAuthError("");
@@ -2269,28 +2386,46 @@ export default function App() {
                 Forgot password?
               </button>
             )}
-            <p className="auth-switch">
-              {authMode === "signup"
-                ? "Already in the circle? "
-                : authMode === "login"
-                  ? "New around here? "
-                  : "Remember your password? "}
+            {authMode === "login" && (
               <button
                 type="button"
-                className="text-btn"
+                className="text-btn centered"
+                disabled={busy}
                 onClick={() => {
-                  setAuthMode(
-                    authMode === "signup" || authMode === "reset"
-                      ? "login"
-                      : "signup",
-                  );
+                  setAuthMode("confirm");
+                  setAuthNow(Date.now());
                   setAuthError("");
                   setAuthInfo("");
                 }}
               >
-                {authMode === "login" ? "Create an account" : "Log in"}
+                Need another confirmation email?
               </button>
-            </p>
+            )}
+            {authMode !== "confirm" && (
+              <p className="auth-switch">
+                {authMode === "signup"
+                  ? "Already in the circle? "
+                  : authMode === "login"
+                    ? "New around here? "
+                    : "Remember your password? "}
+                <button
+                  type="button"
+                  className="text-btn"
+                  disabled={busy}
+                  onClick={() => {
+                    setAuthMode(
+                      authMode === "signup" || authMode === "reset"
+                        ? "login"
+                        : "signup",
+                    );
+                    setAuthError("");
+                    setAuthInfo("");
+                  }}
+                >
+                  {authMode === "login" ? "Create an account" : "Log in"}
+                </button>
+              </p>
+            )}
             <div className="form-footnote">
               <ShieldCheck size={16} /> Credits track friendly IOUs. SideBet
               doesn’t process payments.

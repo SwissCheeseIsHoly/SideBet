@@ -1,7 +1,7 @@
 # SideBet rebuild checkpoint
 
 Working repository: `/Users/gradyhendrix/Documents/GitHub/SideBet`
-Branch: `codex/social-sidebet`
+Current fix branch: `codex/signup-confirmation-recovery`
 The original course-repository copy is unchanged.
 
 Goal: social profiles, friend links/codes/QR, private credit-only group challenges, participant-confirmed results, pairwise IOUs, recipient-approved settlement notes. Existing Supabase project requested by user. Never silently treat local demo data as shared real accounts.
@@ -24,11 +24,20 @@ Architecture: React + TypeScript + Vite frontend; existing Supabase Auth + Postg
 
 The owner enabled Google 2-Step Verification, generated a Google app password, and saved it directly in Supabase. Signup returned HTTP 200 at 21:17:33 UTC; confirmation returned HTTP 303 with no error at 21:17:57 UTC. The owner received the email, confirmed it, and reported successful login. The authenticated Chrome dashboard showed an empty real account. The earlier Gmail `535` errors are resolved. No credential is stored in this repository.
 
-## Remaining launch steps
+## Live deployment — October 2, 2026
 
-1. Review and merge the rebuild pull request, then verify the Pages deployment and login on the public URL. The public site still serves the earlier version until that deployment.
-2. Complete a real password-recovery email check and a two-account browser acceptance test. The shared database lifecycle has already passed the hosted two-user transactional test; these remaining browser checks are listed explicitly in `docs/VERIFICATION.md`.
+PR #1 merged as `36608e7564952e5afdb18ddf78fee2cf59836074`. GitHub Actions run `37066705772` passed tests, build, and Pages deployment. Public URL: https://swisscheeseisholy.github.io/SideBet/. Public assets and demo/invite UI verified.
 
-GitHub Pages source is now set to GitHub Actions (saved and verified October 2, 2026), ready for the checked-in workflow.
+## Signup recovery fix — October 3, 2026
+
+Investigated reported missing confirmation emails. The account in the reported screenshot was already confirmed and had signed in. Repeating signup returns a privacy-preserving response and does not replace the original password or send another confirmation for an already confirmed account. The old frontend incorrectly promised an email for every successful signup response. A separate Gmail 550 5.1.1 bounce identified a misspelled recipient, not an SMTP authentication failure. Recent signup requests returned HTTP 200 without SMTP errors.
+
+- Dedicated confirmation step explains new and existing accounts, preserves the submitted email, clears the password form, offers resend/login/email correction, and throttles repeated resend requests.
+- Unconfirmed login directs to confirmation recovery; invalid credentials direct to the original password or password reset. No public account lookup or identity enumeration was added.
+- Friend links open signup on the homepage, with the pending friend invitation retained through signup/login in the same browser.
+- No database or SMTP setting changes, no bypass of email confirmation, and no credentials stored.
+- Local tests/build and browser checks recorded in `docs/VERIFICATION.md`. Deployment of this fix is pending at this checkpoint.
+
+Remaining manual acceptance: fresh-user confirmation delivery, password recovery completion, and a complete two-account browser lifecycle. The shared database lifecycle has already passed the hosted two-user transactional test.
 
 See `docs/VERIFICATION.md` for validation scope and the security advisor review. Never commit credentials, `.env`, `node_modules`, or generated test data. The Supabase publishable key is public by design; database permissions enforce security.

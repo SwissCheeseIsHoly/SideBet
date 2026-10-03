@@ -3936,3 +3936,21 @@ input[type="radio"] {
     scroll-behavior: auto !important;
   }
 }
+
+.confirmation-help {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: #f0f3e6;
+  color: #596c3f;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.confirmation-help p {
+  margin: 0;
+}
+.confirmation-help p + p {
+  margin-top: 12px;
+}
+.confirmation-help strong {
+  color: #30382b;
+}
